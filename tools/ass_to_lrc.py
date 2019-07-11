@@ -120,19 +120,35 @@ def assToLrc(args):
 		t = mutagen.File(str(args.song_file))
 		info = t.info
 		tags = t.tags
+		
+		if not len(tags):
+			print("Specificed song file has no tags")
+			exit(1)
 
-		if "ARTIST" in tags and len(tags["ARTIST"]) > 0:
-			args.artist = tags["ARTIST"][0]
-		if "TITLE" in tags and len(tags["TITLE"]) > 0:
-			args.title = tags["TITLE"][0]
-		if "ALBUM" in tags and len(tags["ALBUM"]) > 0:
-			args.album = tags["ALBUM"][0]
-		if "DATE" in tags and len(tags["DATE"]) > 0:
-			args.year = tags["DATE"][0]
-		elif "YEAR" in tags and len(tags["YEAR"]) > 0:
-			args.year = tags["YEAR"][0]
+		possibleTags = {
+			"artist": ["ARTIST", "©ART"],
+			"title": ["TITLE", "©nam"],
+			"album": ["ALBUM", "©alb"],
+			"year": ["DATE", "YEAR", "©day"],
+		}
+		
+		for tagname, taglist in possibleTags.items():
+			for pt in taglist:
+				if pt in tags and len(tags[pt]):
+					setattr(args, tagname, tags[pt][0])
 
 		args.length = deltaToLrcDurationStr(secsToDelta(info.length))
+		
+	else:
+		print("mutagen not installed, not using it")
+		
+	albumStr = ""
+	if args.album is None and args.year:
+		albumStr = args.year
+	elif args.album and args.year is None:
+		albumStr = args.album
+	elif args.album and args.year:
+		albumStr = F"{args.album} ({args.year})"
 
 	lrc_file = ""
 	if args.artist:
@@ -140,18 +156,17 @@ def assToLrc(args):
 	if args.title:
 		lrc_file += LRC_TI_HEADER.format(title=args.title)
 	if args.album:
-		lrc_file += LRC_AL_HEADER.format(album=args.album)
+		lrc_file += LRC_AL_HEADER.format(album=albumStr)
 	if args.lrc_author:
 		lrc_file += LRC_BY_HEADER.format(lrc_author=args.lrc_author)
 	if args.length:
 		lrc_file += LRC_LE_HEADER.format(length=args.length)
 
-	if args.title and args.artist and args.album and args.lrc_author and not args.without_inline_header:
-		album = args.album if args.year is None else args.album + " (" + args.year + ")"
+	if args.title and args.artist and args.lrc_author and not args.without_inline_header and (args.album is not None or args.year is not None):		
 		lrc_file += LRC_INLINE_HEADER.format(
 			artist=args.artist,  # ar
 			title=args.title,  # ti
-			album=album,  # al
+			album=albumStr,  # al
 			lrc_author=args.lrc_author,  # by
 			year="" if args.year is None else args.year
 		)
