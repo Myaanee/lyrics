@@ -6,7 +6,7 @@
 
 ### Folder structure is:
 ```
-regular_songs/{YEAR}/{ALBUM NAME}/[{TRACK_NUMBER}] {ARTIST} - {TITLE}.ass|lrc|jp.lrc
+regular_songs/{YEAR}/{ALBUM NAME|ARTIST NAME}/[{TRACK_NUMBER}] {ARTIST} - {TITLE}.ass|lrc|jp.lrc
 ```
 
 File formats are:
