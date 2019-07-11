@@ -203,7 +203,7 @@ def assToLrc(args):
 		if args.lrc_format == "romaji+japanese":
 			if jap_line and rom_line:
 				text = "{} ({})".format(rom_line.StrippedText(), jap_line.StrippedText())
-		elif args.lrc_format == "japanse":
+		elif args.lrc_format == "japanese":
 			if jap_line:
 				text = jap_line.StrippedText()
 		elif args.lrc_format == "romaji":
