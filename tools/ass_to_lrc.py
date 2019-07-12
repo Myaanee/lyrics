@@ -134,8 +134,13 @@ def assToLrc(args):
 		
 		for tagname, taglist in possibleTags.items():
 			for pt in taglist:
-				if pt in tags and len(tags[pt]):
-					setattr(args, tagname, tags[pt][0])
+				try:
+					pt in tags
+				except ValueError:
+					pass
+				else:
+					if pt in tags and len(tags[pt]):
+						setattr(args, tagname, tags[pt][0])
 
 		args.length = deltaToLrcDurationStr(secsToDelta(info.length))
 		
