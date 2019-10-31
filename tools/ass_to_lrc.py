@@ -183,8 +183,8 @@ def assToLrc(args):
 		if a.Format in ("Dialogue", "Comment") and "template line" not in a.Effect:
 			ass_lines.append(a)
 
-	lrc_lines_rom = [a for a in ass_lines if a.Style == args.rom_style]
-	lrc_lines_jap = [a for a in ass_lines if a.Style == args.jap_style]
+	lrc_lines_rom = [a for a in ass_lines if a.Style == args.rom_style and a.Format == "Dialogue"]
+	lrc_lines_jap = [a for a in ass_lines if a.Style == args.jap_style and a.Format == "Dialogue"]
 	
 	iterator_max = max(len(lrc_lines_jap), len(lrc_lines_rom))
 
